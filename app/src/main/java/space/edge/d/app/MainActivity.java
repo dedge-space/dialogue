@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,8 +31,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private static final int REQUEST_CODE_SIGN = 0x02;
 
     private TextView tv;
+    private EditText edit;
 
-    private String msg = "test_scry_start";
+    private String msg;
     private String address;
 
     @Override
@@ -39,6 +41,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         tv = findViewById(R.id.tv_address);
+        edit = findViewById(R.id.edit_input_msg);
         findViewById(R.id.btn_start).setOnClickListener(this);
         findViewById(R.id.btn_sign).setOnClickListener(this);
     }
@@ -111,6 +114,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void signMsg() {
+        msg = edit.getText().toString();
+        if(TextUtils.isEmpty(msg)){
+            Toast.makeText(this, "请输入签名消息", Toast.LENGTH_SHORT).show();
+            return;
+        }
         String uri = Uri.decode("wallet://info.scry.wallet:1/sign?id=" + getPackageName() + "&sign_msg=" + msg);
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
