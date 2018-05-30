@@ -29,9 +29,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private static final int REQUEST_CODE = 0x01;
     private static final int REQUEST_CODE_SIGN = 0x02;
+    private static final int REQUEST_CODE_TRANSFER = 0x03;
 
     private TextView tv;
-    private EditText edit;
+    private EditText edit,editInputAddress;
 
     private String msg;
     private String address;
@@ -42,8 +43,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_main);
         tv = findViewById(R.id.tv_address);
         edit = findViewById(R.id.edit_input_msg);
+        editInputAddress = findViewById(R.id.edit_input_address);
         findViewById(R.id.btn_start).setOnClickListener(this);
         findViewById(R.id.btn_sign).setOnClickListener(this);
+        findViewById(R.id.btn_transfer).setOnClickListener(this);
     }
 
     private void refresh(String text) {
@@ -64,13 +67,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 case 1001:
                     Toast.makeText(this, "请先创建钱包", Toast.LENGTH_SHORT).show();
             }
-        } else if(requestCode == REQUEST_CODE_SIGN) {
-            switch (resultCode){
+        } else if (requestCode == REQUEST_CODE_SIGN) {
+            switch (resultCode) {
                 case Activity.RESULT_OK:
                     String signedMsg = data.getStringExtra("signed_msg");
-                    if(TextUtils.isEmpty(signedMsg)){
-                        Toast.makeText(this,"签名失败",Toast.LENGTH_SHORT).show();
-                    }else{
+                    if (TextUtils.isEmpty(signedMsg)) {
+                        Toast.makeText(this, "签名失败", Toast.LENGTH_SHORT).show();
+                    } else {
                         verifySignature(signedMsg);
                     }
                     break;
@@ -82,7 +85,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     break;
 
             }
-        }else{
+        } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -100,6 +103,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 }
                 signMsg();
                 break;
+            case R.id.btn_transfer:
+                String address = editInputAddress.getText().toString();
+                transfer(address);
+                break;
         }
     }
 
@@ -115,7 +122,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private void signMsg() {
         msg = edit.getText().toString();
-        if(TextUtils.isEmpty(msg)){
+        if (TextUtils.isEmpty(msg)) {
             Toast.makeText(this, "请输入签名消息", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -135,11 +142,25 @@ public class MainActivity extends Activity implements View.OnClickListener {
             BigInteger pubKey_ = new BigInteger(1, Arrays.copyOfRange(pubKey, 1, pubKey.length));
             String address = Numeric.prependHexPrefix(Keys.getAddress(pubKey_));
             if (this.address.equals(address)) {
-                Toast.makeText(this,"签名验证通过",Toast.LENGTH_SHORT).show();
-                tv.setText(tv.getText()+"\n 签名验证通过");
+                Toast.makeText(this, "签名验证通过", Toast.LENGTH_SHORT).show();
+                tv.setText(tv.getText() + "\n 签名验证通过");
             }
         } catch (SignatureException e) {
             e.printStackTrace();
         }
+    }
+
+    private void transfer(String address) {
+        if (TextUtils.isEmpty(address)) {
+            Toast.makeText(this, "请先输入转账地址", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String uri = Uri.decode("wallet://info.scry.wallet:1/transfer?id=" + getPackageName() + "&address=" + address);
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.addCategory(Intent.CATEGORY_INFO);
+        intent.setComponent(new ComponentName("info.scry.wallet", "info.scry.wallet.ExportAddressActivity"));
+        intent.setData(Uri.parse(uri));
+        startActivityForResult(intent, REQUEST_CODE_SIGN);
     }
 }
