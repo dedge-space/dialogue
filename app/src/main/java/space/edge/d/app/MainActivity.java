@@ -32,7 +32,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private static final int REQUEST_CODE_TRANSFER = 0x03;
 
     private TextView tv;
-    private EditText edit,editInputAddress;
+    private EditText edit, editInputAddress;
 
     private String msg;
     private String address;
@@ -84,6 +84,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     Toast.makeText(this, "签名消息为空", Toast.LENGTH_SHORT).show();
                     break;
 
+            }
+        } else if (requestCode == REQUEST_CODE_TRANSFER) {
+            switch (resultCode) {
+                case Activity.RESULT_OK:
+                    break;
+                case 1001:
+                    Toast.makeText(this, "请先创建钱包", Toast.LENGTH_SHORT).show();
+                    break;
+                case 1006:
+                    break;
+                case 1007:
+                    break;
+                case 1008:
+                    break;
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
