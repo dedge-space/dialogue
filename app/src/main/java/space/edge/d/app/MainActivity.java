@@ -125,7 +125,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void getAddress() {
-        String uri = Uri.decode("wallet://info.scry.wallet:1/address?id=" + getPackageName());
+        String uri = Uri.decode("wallet://info.scry.wallet:1/address");
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
         intent.addCategory(Intent.CATEGORY_INFO);
@@ -140,7 +140,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             Toast.makeText(this, "请输入签名消息", Toast.LENGTH_SHORT).show();
             return;
         }
-        String uri = Uri.decode("wallet://info.scry.wallet:1/sign?id=" + getPackageName() + "&sign_msg=" + msg);
+        String uri = Uri.decode("wallet://info.scry.wallet:1/sign?sign_msg=" + msg);
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
         intent.addCategory(Intent.CATEGORY_INFO);
@@ -169,7 +169,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             Toast.makeText(this, "请先输入转账地址", Toast.LENGTH_SHORT).show();
             return;
         }
-        String uri = Uri.decode("wallet://info.scry.wallet:1/transfer?id=" + getPackageName() + "&address=" + address);
+        String uri = Uri.decode("wallet://info.scry.wallet:1/transfer?address=" + address);
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
         intent.addCategory(Intent.CATEGORY_INFO);
