@@ -64,8 +64,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     break;
                 case 1000:
                     Toast.makeText(this, "start error", Toast.LENGTH_SHORT).show();
+                    break;
                 case 1001:
                     Toast.makeText(this, "请先创建钱包", Toast.LENGTH_SHORT).show();
+                    break;
             }
         } else if (requestCode == REQUEST_CODE_SIGN) {
             switch (resultCode) {
